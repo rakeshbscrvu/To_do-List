@@ -1,0 +1,417 @@
+/* =============================================
+   TaskFlow — style.css
+   Full UI styling + background image support
+   ============================================= */
+
+/* ---- Google Fonts (import in your HTML or add manually) ---- */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+/* ---- Root Background (Background Image) ---- */
+.root-bg {
+    /* Replace the URL with your actual image path:
+       e.g. url('/images/background.jpg')
+       or   url('file:///C:/images/bg.jpg')
+       Using a gradient fallback if no image provided */
+    -fx-background-image: url('/images/background.jpg');
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    /* Fallback gradient if image not found */
+    -fx-background-color: linear-gradient(to bottom right, #1a1a2e, #16213e, #0f3460);
+    -fx-font-family: 'Nunito', 'Segoe UI', sans-serif;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+    -fx-background-color: rgba(10, 14, 35, 0.88);
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-width: 0 1 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0, 4, 0);
+}
+
+.sidebar-header {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-border-color: rgba(255,255,255,0.07);
+    -fx-border-width: 0 0 1 0;
+}
+
+.app-icon {
+    -fx-font-size: 32px;
+}
+
+.app-name {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e8f4ff;
+    -fx-font-family: 'Nunito', 'Segoe UI', sans-serif;
+}
+
+.sidebar-date {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(200,220,255,0.55);
+}
+
+/* ---- Nav Items ---- */
+.nav-section-title {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(200,220,255,0.4);
+    -fx-padding: 6 0 4 4;
+    -fx-letter-spacing: 1.5;
+}
+
+.nav-item {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+
+.nav-item:hover {
+    -fx-background-color: rgba(255,255,255,0.07);
+}
+
+.nav-item-active {
+    -fx-background-color: rgba(99,179,237,0.18) !important;
+    -fx-border-color: rgba(99,179,237,0.4);
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+}
+
+.nav-icon {
+    -fx-font-size: 16px;
+}
+
+.nav-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(220,235,255,0.85);
+    -fx-font-weight: 600;
+}
+
+/* ---- Sidebar Stats ---- */
+.sidebar-stats {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-border-color: rgba(255,255,255,0.07);
+    -fx-border-width: 1 0 0 0;
+}
+
+.stat-label {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: rgba(200,220,255,0.7);
+}
+
+.stat-overdue {
+    -fx-text-fill: #fc8181 !important;
+}
+
+/* ---- Content Area ---- */
+.content-area {
+    -fx-background-color: rgba(0,0,0,0.15);
+}
+
+/* ---- Scroll Pane ---- */
+.transparent-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-padding: 0;
+}
+
+.transparent-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.transparent-scroll .scroll-bar:vertical {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-pref-width: 6px;
+}
+
+.transparent-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(99,179,237,0.4);
+    -fx-background-radius: 3;
+}
+
+/* ---- Page Titles ---- */
+.page-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e8f4ff;
+}
+
+.page-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: rgba(200,220,255,0.55);
+}
+
+.section-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(200,220,255,0.7);
+    -fx-padding: 8 0 4 0;
+}
+
+.overdue-label {
+    -fx-text-fill: #fc8181 !important;
+}
+
+/* ---- Task Cards ---- */
+.task-card {
+    -fx-background-color: rgba(255,255,255,0.09);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);
+}
+
+.task-card:hover {
+    -fx-background-color: rgba(255,255,255,0.13);
+    -fx-border-color: rgba(99,179,237,0.35);
+    -fx-effect: dropshadow(gaussian, rgba(99,179,237,0.25), 12, 0, 0, 3);
+}
+
+.task-card-overdue {
+    -fx-border-color: rgba(252,129,129,0.5) !important;
+    -fx-background-color: rgba(252,129,129,0.07) !important;
+}
+
+.task-card-done {
+    -fx-background-color: rgba(72,187,120,0.08) !important;
+    -fx-border-color: rgba(72,187,120,0.25) !important;
+    -fx-opacity: 0.75;
+}
+
+.card-title {
+    -fx-font-size: 14.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e8f4ff;
+}
+
+.card-title-done {
+    -fx-strikethrough: true;
+    -fx-text-fill: rgba(200,220,255,0.45) !important;
+}
+
+.card-meta {
+    -fx-font-size: 11.5px;
+    -fx-text-fill: rgba(200,220,255,0.5);
+}
+
+.card-desc {
+    -fx-font-size: 12px;
+    -fx-text-fill: rgba(200,220,255,0.6);
+    -fx-padding: 2 0 0 0;
+}
+
+/* ---- Checkbox ---- */
+.task-checkbox .box {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-border-color: rgba(200,220,255,0.3);
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.task-checkbox:selected .box {
+    -fx-background-color: #48bb78;
+    -fx-border-color: #48bb78;
+}
+
+/* ---- Priority Badges ---- */
+.priority-badge {
+    -fx-font-size: 10.5px;
+    -fx-font-weight: bold;
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 20;
+    -fx-text-fill: white;
+}
+
+.priority-high   { -fx-background-color: #e53e3e; }
+.priority-medium { -fx-background-color: #dd6b20; }
+.priority-low    { -fx-background-color: #2b6cb0; }
+
+/* ---- Status Combo ---- */
+.status-combo {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: #e8f4ff;
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(255,255,255,0.15);
+    -fx-border-radius: 8;
+    -fx-font-size: 12px;
+    -fx-pref-width: 110px;
+}
+
+.status-combo .list-view {
+    -fx-background-color: #1a2035;
+}
+
+/* ---- Delete Button ---- */
+.btn-delete {
+    -fx-background-color: rgba(229,62,62,0.15);
+    -fx-text-fill: #fc8181;
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(229,62,62,0.3);
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+    -fx-padding: 5 10;
+}
+
+.btn-delete:hover {
+    -fx-background-color: rgba(229,62,62,0.30);
+}
+
+/* ---- Filter Bar ---- */
+.filter-bar {
+    -fx-background-color: rgba(255,255,255,0.07);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+}
+
+.search-field {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: #e8f4ff;
+    -fx-prompt-text-fill: rgba(200,220,255,0.45);
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(255,255,255,0.15);
+    -fx-border-radius: 8;
+    -fx-font-size: 13px;
+    -fx-padding: 8 12;
+}
+
+.combo-filter {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: #e8f4ff;
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(255,255,255,0.15);
+    -fx-border-radius: 8;
+    -fx-font-size: 12px;
+}
+
+/* ---- Buttons ---- */
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #3182ce, #2b6cb0);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 9 22;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+    -fx-effect: dropshadow(gaussian, rgba(49,130,206,0.5), 10, 0, 0, 3);
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #4299e1, #3182ce);
+}
+
+.btn-secondary {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: rgba(200,220,255,0.8);
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(255,255,255,0.18);
+    -fx-border-radius: 10;
+    -fx-padding: 9 18;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+/* ---- Form Card ---- */
+.form-card {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-background-radius: 16;
+    -fx-border-color: rgba(255,255,255,0.12);
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 4);
+}
+
+.form-label {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(200,220,255,0.75);
+}
+
+.styled-field {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: #e8f4ff;
+    -fx-prompt-text-fill: rgba(200,220,255,0.40);
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(255,255,255,0.15);
+    -fx-border-radius: 8;
+    -fx-font-size: 13px;
+    -fx-padding: 9 12;
+}
+
+.styled-field:focused {
+    -fx-border-color: rgba(99,179,237,0.6);
+    -fx-effect: dropshadow(gaussian, rgba(99,179,237,0.3), 6, 0, 0, 0);
+}
+
+.styled-area {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: #e8f4ff;
+    -fx-prompt-text-fill: rgba(200,220,255,0.40);
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(255,255,255,0.15);
+    -fx-border-radius: 8;
+    -fx-font-size: 13px;
+    -fx-padding: 8 12;
+}
+
+.styled-area .content {
+    -fx-background-color: transparent;
+}
+
+.styled-date {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: #e8f4ff;
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(255,255,255,0.15);
+    -fx-border-radius: 8;
+    -fx-font-size: 13px;
+}
+
+/* ---- Feedback Labels ---- */
+.feedback-label {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: bold;
+}
+
+.feedback-label.error   { -fx-text-fill: #fc8181; }
+.feedback-label.success { -fx-text-fill: #68d391; }
+
+/* ---- Empty Messages ---- */
+.empty-message {
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(200,220,255,0.45);
+    -fx-padding: 20 0;
+}
+
+/* ---- Reminder Cards ---- */
+.reminder-card {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+}
+
+.reminder-card:hover {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-border-color: rgba(99,179,237,0.3);
+}
+
+.time-bubble {
+    -fx-background-color: rgba(49,130,206,0.25);
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(49,130,206,0.4);
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 8 6;
+}
+
+.time-text {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #90cdf4;
+}
