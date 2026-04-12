@@ -27,9 +27,7 @@ TaskManagerApp/
 │   │
 │   └── resources/
 │       ├── styles/
-│       │   └── style.css           ← Full dark-glass UI theme + background image
-│       └── images/
-│           └── background.jpg      ← ← PUT YOUR BACKGROUND IMAGE HERE
+│          └── style.css           ← Full dark-glass UI theme + background image
 ```
 
 ---
@@ -74,30 +72,3 @@ java --module-path $JAVAFX_HOME/lib --add-modules javafx.controls \
 
 ---
 
-## 🖼 Background Image
-
-To set a background image:
-1. Place your image in `src/resources/images/background.jpg`
-2. In `style.css`, the `.root-bg` class uses:
-   ```css
-   -fx-background-image: url('/images/background.jpg');
-   ```
-   Change the path to match your project structure.
-
-**Fallback:** If no image is found, a dark blue gradient is used automatically.
-
----
-
-## 📦 Dependencies
-
-- JavaFX Controls (javafx.controls)
-- No external libraries needed — pure JavaFX + Java standard library
-
----
-
-## 🎨 Customisation
-
-- **Colors / theme**: Edit `style.css` — all colors use CSS variables-style classes
-- **Sample data**: Edit `TaskStore.java` → `loadSampleData()` method
-- **Reminder interval**: Edit `ReminderService.java` → `Duration.seconds(30)`
-- **Categories**: Added automatically from tasks; default is "General"
