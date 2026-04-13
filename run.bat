@@ -8,4 +8,3 @@ cd ..
 java --module-path "C:\Users\Dell\Downloads\openjfx-21.0.10_windows-x64_bin-sdk\javafx-sdk-21.0.10\lib" --add-modules javafx.controls,javafx.fxml main.Main
 
 pause
-caused how may 
