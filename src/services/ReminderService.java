@@ -20,13 +20,13 @@ public class ReminderService {
     private Set<String> notifiedIds = new HashSet<>();
 
     public void start() {
-        // Check every 30 seconds
+        // Check immediately on start
+        checkReminders();
+
+        // Then check every 30 seconds
         timeline = new Timeline(new KeyFrame(Duration.seconds(30), e -> checkReminders()));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-
-        // Also check immediately on start
-        checkReminders();
     }
 
     public void stop() {
@@ -35,17 +35,24 @@ public class ReminderService {
 
     private void checkReminders() {
         LocalTime now = LocalTime.now();
-        List<Task> tasks = TaskStore.getInstance().getTodayTasks();
+        // Check ALL tasks not just today — in case of timezone issues
+        List<Task> tasks = TaskStore.getInstance().getAllTasks();
 
         for (Task task : tasks) {
-            if (task.getReminderTime() == null) continue;
-            if (task.getStatus() == Task.Status.DONE) continue;
-            if (notifiedIds.contains(task.getId())) continue;
+            if (task.getReminderTime() == null)            continue;
+            if (task.getStatus() == Task.Status.DONE)     continue;
+            if (notifiedIds.contains(task.getId()))       continue;
+            if (!task.isDueToday())                       continue;
 
             LocalTime reminder = task.getReminderTime();
-            // Trigger if within 2-minute window
-            if (!now.isBefore(reminder) && now.isBefore(reminder.plusMinutes(2))) {
+
+            // Fire if current time is within a 3-minute window of reminder time
+            boolean inWindow = !now.isBefore(reminder) &&
+                                now.isBefore(reminder.plusMinutes(3));
+
+            if (inWindow) {
                 notifiedIds.add(task.getId());
+                System.out.println("Firing reminder for: " + task.getTitle());
                 Platform.runLater(() -> showReminderAlert(task));
             }
         }
@@ -53,16 +60,25 @@ public class ReminderService {
 
     private void showReminderAlert(Task task) {
         Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("⏰ Task Reminder");
+        alert.setTitle("TaskFlow Reminder");
         alert.setHeaderText("Reminder: " + task.getTitle());
         alert.setContentText(
-                "📋 " + task.getDescription() + "\n" +
-                "🏷 Category: " + task.getCategory() + "\n" +
-                "⚡ Priority: " + task.getPriority()
+            "Description: " + (task.getDescription().isEmpty() ? "No description" : task.getDescription()) + "\n" +
+            "Category:    " + task.getCategory() + "\n" +
+            "Priority:    " + task.getPriority() + "\n" +
+            "Due:         " + task.getDueDate()
         );
-        alert.getDialogPane().getStylesheets().add(
-                getClass().getResource("/styles/style.css").toExternalForm()
-        );
+
+        // Safely load CSS — don't crash if file missing
+        try {
+            var css = getClass().getResource("/styles/style.css");
+            if (css != null) {
+                alert.getDialogPane().getStylesheets().add(css.toExternalForm());
+            }
+        } catch (Exception e) {
+            System.out.println("Could not load CSS for alert: " + e.getMessage());
+        }
+
         alert.show();
     }
 }

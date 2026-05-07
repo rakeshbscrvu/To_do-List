@@ -1,14 +1,12 @@
 package views;
 
+import data.TaskStore;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import services.ReminderService;
 
 import java.time.LocalDate;
@@ -19,146 +17,221 @@ public class MainView {
     private BorderPane root;
     private StackPane contentArea;
     private ReminderService reminderService;
-
-    // Sub-views
     private TodayView todayView;
     private AllTasksView allTasksView;
     private AddTaskView addTaskView;
     private RemindersView remindersView;
+    private HBox activeNavItem = null;
 
     public MainView() {
         reminderService = new ReminderService();
         buildUI();
         reminderService.start();
-        showToday(); // Default view
+        showToday();
     }
 
     private void buildUI() {
         root = new BorderPane();
+        root.setStyle("-fx-background-color:#111827;");
 
-        // Background image via CSS background
-        root.getStyleClass().add("root-bg");
+        root.setLeft(buildSidebar());
 
-        // Sidebar
-        VBox sidebar = buildSidebar();
-        root.setLeft(sidebar);
-
-        // Content area (center)
         contentArea = new StackPane();
-        contentArea.getStyleClass().add("content-area");
+        contentArea.setStyle("-fx-background-color:#111827;");
         root.setCenter(contentArea);
 
-        // Init sub-views
         todayView     = new TodayView();
         allTasksView  = new AllTasksView();
-        addTaskView   = new AddTaskView(() -> {
-            allTasksView.refresh();
-            todayView.refresh();
-            showToday();
-        });
+        addTaskView   = new AddTaskView(() -> { allTasksView.refresh(); todayView.refresh(); showToday(); });
         remindersView = new RemindersView();
     }
 
     private VBox buildSidebar() {
         VBox sidebar = new VBox(0);
-        sidebar.getStyleClass().add("sidebar");
-        sidebar.setPrefWidth(230);
+        sidebar.setPrefWidth(245);
+        sidebar.setStyle(
+            "-fx-background-color: #0d1117;" +
+            "-fx-border-color: #1f2937;" +
+            "-fx-border-width: 0 1 0 0;"
+        );
 
-        // App logo / header
+        // ── Header ────────────────────────────────────────
         VBox header = new VBox(6);
-        header.getStyleClass().add("sidebar-header");
-        header.setAlignment(Pos.CENTER_LEFT);
-        header.setPadding(new Insets(28, 20, 20, 20));
+        header.setPadding(new Insets(26, 20, 20, 20));
+        header.setStyle(
+            "-fx-background-color: #0d1117;" +
+            "-fx-border-color: #1f2937;" +
+            "-fx-border-width: 0 0 1 0;"
+        );
 
-        Label appIcon = new Label("✅");
-        appIcon.getStyleClass().add("app-icon");
+        Label icon = new Label("✅");
+        icon.setStyle("-fx-font-size:34px; -fx-effect: dropshadow(gaussian,#00d4aa,16,0.4,0,0);");
 
-        Label appName = new Label("TaskFlow");
-        appName.getStyleClass().add("app-name");
+        Label name = new Label("TaskFlow");
+        name.setStyle(
+            "-fx-font-size:22px; -fx-font-weight:bold; -fx-text-fill:#00d4aa;" +
+            "-fx-effect: dropshadow(gaussian,rgba(0,212,170,0.5),10,0,0,0);"
+        );
 
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, MMM d"));
-        Label dateLabel = new Label(today);
-        dateLabel.getStyleClass().add("sidebar-date");
+        Label date = new Label("📅  " + LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE, MMM d")));
+        date.setStyle("-fx-font-size:11px; -fx-text-fill:#374151;");
 
-        header.getChildren().addAll(appIcon, appName, dateLabel);
+        header.getChildren().addAll(icon, name, date);
 
-        // Nav items
+        // ── Nav ───────────────────────────────────────────
         VBox nav = new VBox(4);
-        nav.setPadding(new Insets(16, 12, 16, 12));
+        nav.setPadding(new Insets(16, 12, 8, 12));
+        nav.setStyle("-fx-background-color:transparent;");
 
-        Label navTitle = new Label("NAVIGATION");
-        navTitle.getStyleClass().add("nav-section-title");
+        Label navTitle = new Label("MENU");
+        navTitle.setStyle("-fx-font-size:9.5px; -fx-font-weight:bold; -fx-text-fill:#374151; -fx-padding:8 0 6 8;");
 
-        HBox todayBtn      = navItem("🌤", "Today",           () -> showToday());
-        HBox allBtn        = navItem("📋", "All Tasks",       () -> showAllTasks());
-        HBox addBtn        = navItem("➕", "Add Task",        () -> showAddTask());
-        HBox remindersBtn  = navItem("⏰", "Reminders",       () -> showReminders());
+        HBox todayBtn  = navItem("🌤", "Today",      "#00d4aa", () -> showToday());
+        HBox allBtn    = navItem("📋", "All Tasks",  "#3b82f6", () -> showAllTasks());
+        HBox addBtn    = navItem("➕", "Add Task",   "#a855f7", () -> showAddTask());
+        HBox remBtn    = navItem("⏰", "Reminders",  "#f59e0b", () -> showReminders());
 
-        nav.getChildren().addAll(navTitle, todayBtn, allBtn, addBtn, remindersBtn);
+        nav.getChildren().addAll(navTitle, todayBtn, allBtn, addBtn, remBtn);
 
-        // Stats at bottom
-        VBox stats = buildSidebarStats();
+        // ── Stat cards ────────────────────────────────────
+        VBox statsSection = new VBox(10);
+        statsSection.setPadding(new Insets(16, 14, 24, 14));
+        statsSection.setStyle(
+            "-fx-background-color:#0d1117;" +
+            "-fx-border-color:#1f2937;" +
+            "-fx-border-width:1 0 0 0;"
+        );
+
+        Label statsTitle = new Label("OVERVIEW");
+        statsTitle.setStyle("-fx-font-size:9.5px; -fx-font-weight:bold; -fx-text-fill:#374151; -fx-padding:0 0 4 2;");
+
+        int today   = TaskStore.getInstance().getTodayTasks().size();
+        int total   = TaskStore.getInstance().getAllTasks().size();
+        int overdue = TaskStore.getInstance().getOverdueTasks().size();
+
+        statsSection.getChildren().addAll(
+            statsTitle,
+            statCard("🌤", "Today",   String.valueOf(today),
+                     "#00d4aa", "#ffffff", "#0d2a22", "#00d4aa"),
+            statCard("📊", "Total",   String.valueOf(total),
+                     "#3b82f6", "#ffffff", "#0c1a2e", "#3b82f6"),
+            statCard("🔴", "Overdue", String.valueOf(overdue),
+                     overdue > 0 ? "#ef4444" : "#00d4aa",
+                     "#ffffff",
+                     overdue > 0 ? "#2d1010" : "#0d2a22",
+                     overdue > 0 ? "#ef4444" : "#00d4aa")
+        );
+
+        // Version tag
+        Label version = new Label("TaskFlow v1.0  ·  SQLite");
+        version.setStyle("-fx-font-size:9px; -fx-text-fill:#1f2937; -fx-padding:0 0 8 14;");
 
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
 
-        sidebar.getChildren().addAll(header, nav, spacer, stats);
+        sidebar.getChildren().addAll(header, nav, spacer, statsSection, version);
         return sidebar;
     }
 
-    private HBox navItem(String icon, String label, Runnable action) {
-        HBox item = new HBox(12);
-        item.getStyleClass().add("nav-item");
+    private HBox navItem(String emoji, String label, String accentColor, Runnable action) {
+        HBox item = new HBox(14);
         item.setAlignment(Pos.CENTER_LEFT);
         item.setPadding(new Insets(10, 14, 10, 14));
+        item.setStyle(
+            "-fx-background-color:transparent;" +
+            "-fx-background-radius:10;" +
+            "-fx-cursor:hand;"
+        );
 
-        Label iconLabel = new Label(icon);
-        iconLabel.getStyleClass().add("nav-icon");
+        // Left accent bar (hidden by default)
+        Rectangle accent = new Rectangle(3, 26);
+        accent.setArcWidth(3); accent.setArcHeight(3);
+        accent.setFill(Color.TRANSPARENT);
 
-        Label textLabel = new Label(label);
-        textLabel.getStyleClass().add("nav-label");
+        Label emojiLbl = new Label(emoji);
+        emojiLbl.setStyle("-fx-font-size:16px;");
 
-        item.getChildren().addAll(iconLabel, textLabel);
+        Label textLbl = new Label(label);
+        textLbl.setStyle("-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:#9ca3af;");
+
+        item.getChildren().addAll(accent, emojiLbl, textLbl);
+
+        item.setOnMouseEntered(e -> {
+            if (item != activeNavItem)
+                item.setStyle("-fx-background-color:#1f2937; -fx-background-radius:10; -fx-cursor:hand;");
+        });
+        item.setOnMouseExited(e -> {
+            if (item != activeNavItem)
+                item.setStyle("-fx-background-color:transparent; -fx-background-radius:10; -fx-cursor:hand;");
+        });
+
         item.setOnMouseClicked(e -> {
-            // Remove active from all siblings
-            if (item.getParent() != null) {
-                item.getParent().getChildrenUnmodifiable().forEach(
-                        c -> c.getStyleClass().remove("nav-item-active")
-                );
+            // Deactivate previous
+            if (activeNavItem != null) {
+                activeNavItem.setStyle("-fx-background-color:transparent; -fx-background-radius:10; -fx-cursor:hand;");
+                Rectangle prevBar = (Rectangle) activeNavItem.getChildren().get(0);
+                prevBar.setFill(Color.TRANSPARENT);
+                Label prevText = (Label) activeNavItem.getChildren().get(2);
+                prevText.setStyle("-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:#9ca3af;");
             }
-            item.getStyleClass().add("nav-item-active");
+            // Activate this
+            item.setStyle(
+                "-fx-background-color:#1a2535;" +
+                "-fx-background-radius:10;" +
+                "-fx-border-color:" + accentColor + ";" +
+                "-fx-border-radius:10;" +
+                "-fx-border-width:0 0 0 3;" +
+                "-fx-cursor:hand;"
+            );
+            accent.setFill(Color.web(accentColor));
+            textLbl.setStyle("-fx-font-size:14px; -fx-font-weight:bold; -fx-text-fill:" + accentColor + ";");
+            activeNavItem = item;
             action.run();
         });
 
         return item;
     }
 
-    private VBox buildSidebarStats() {
-        VBox stats = new VBox(8);
-        stats.getStyleClass().add("sidebar-stats");
-        stats.setPadding(new Insets(16, 16, 24, 16));
+    private HBox statCard(String emoji, String label, String value,
+                          String accentColor, String valueColor, String bgColor, String borderColor) {
+        HBox card = new HBox(12);
+        card.setAlignment(Pos.CENTER_LEFT);
+        card.setPadding(new Insets(12, 16, 12, 16));
+        card.setStyle(
+            "-fx-background-color:" + bgColor + ";" +
+            "-fx-background-radius:14;" +
+            "-fx-border-color:" + borderColor + "44;" +
+            "-fx-border-radius:14;" +
+            "-fx-border-width:1;" +
+            "-fx-effect: dropshadow(gaussian," + accentColor + "33,10,0,0,3);"
+        );
 
-        Label title = new Label("OVERVIEW");
-        title.getStyleClass().add("nav-section-title");
+        // Left accent bar on card
+        Rectangle bar = new Rectangle(3, 36);
+        bar.setArcWidth(3); bar.setArcHeight(3);
+        bar.setFill(Color.web(accentColor));
 
-        int todayCount   = data.TaskStore.getInstance().getTodayTasks().size();
-        int totalCount   = data.TaskStore.getInstance().getAllTasks().size();
-        int overdueCount = data.TaskStore.getInstance().getOverdueTasks().size();
+        Label emojiLbl = new Label(emoji);
+        emojiLbl.setStyle("-fx-font-size:20px;");
 
-        Label todayLbl   = new Label("📅 Today: " + todayCount + " tasks");
-        Label totalLbl   = new Label("📊 Total: " + totalCount + " tasks");
-        Label overdueLbl = new Label("🔴 Overdue: " + overdueCount);
+        VBox info = new VBox(2);
+        info.setStyle("-fx-background-color:transparent;");
+        HBox.setHgrow(info, Priority.ALWAYS);
 
-        todayLbl.getStyleClass().add("stat-label");
-        totalLbl.getStyleClass().add("stat-label");
-        overdueLbl.getStyleClass().add("stat-label");
-        if (overdueCount > 0) overdueLbl.getStyleClass().add("stat-overdue");
+        Label lbl = new Label(label.toUpperCase());
+        lbl.setStyle("-fx-font-size:9.5px; -fx-font-weight:bold; -fx-text-fill:" + accentColor + "; -fx-opacity:0.8;");
 
-        stats.getChildren().addAll(title, todayLbl, totalLbl, overdueLbl);
-        return stats;
+        Label val = new Label(value);
+        val.setStyle(
+            "-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:" + valueColor + ";" +
+            "-fx-effect: dropshadow(gaussian," + accentColor + "aa,8,0,0,0);"
+        );
+
+        info.getChildren().addAll(lbl, val);
+        card.getChildren().addAll(bar, emojiLbl, info);
+        return card;
     }
 
-    // --- Navigation ---
     private void showToday()     { todayView.refresh();     setContent(todayView.getView()); }
     private void showAllTasks()  { allTasksView.refresh();  setContent(allTasksView.getView()); }
     private void showAddTask()   {                          setContent(addTaskView.getView()); }
